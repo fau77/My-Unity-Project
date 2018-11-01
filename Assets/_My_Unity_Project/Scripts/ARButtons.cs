@@ -5,8 +5,8 @@ using Vuforia;
 
 public class ARButtons : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 		
 	}
 	
@@ -22,8 +22,10 @@ public class ARButtons : MonoBehaviour {
         hsTargetNamesMust.Add("Tower1");
         hsTargetNamesMust.Add("Enemy");
 
-        HashSet<string> hsTargetNamesHave = new HashSet<string>();
+        //GameObject MenuText = GameObject.Find("MenuText");
 
+        HashSet<string> hsTargetNamesHave = new HashSet<string>();
+        
         // Get the Vuforia StateManager
         StateManager sm = TrackerManager.Instance.GetStateManager();
 
@@ -36,14 +38,15 @@ public class ARButtons : MonoBehaviour {
         foreach (TrackableBehaviour tb in activeTrackables)
         {
             hsTargetNamesHave.Add(tb.TrackableName);
-            Debug.Log("Trackable: " + tb.TrackableName);
         }
-        if (hsTargetNamesMust.Count == hsTargetNamesHave.Count)
+       
+        hsTargetNamesMust.ExceptWith(hsTargetNamesHave);
+        if (hsTargetNamesMust.Count > 0)
         {
-            Debug.Log("Equal!");
+            //MenuText.SetActive(true);
+            GUI.Label(new Rect(0, 0, 120, 100), "Предметов собрано");
         }
-        foreach (string st1 in hsTargetNamesMust) { Debug.Log("Must: " + st1); };
-        foreach (string st2 in hsTargetNamesHave) { Debug.Log("Have: " + st2); };
+
         hsTargetNamesMust.Clear();
         hsTargetNamesHave.Clear();
     }
