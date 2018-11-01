@@ -7,22 +7,22 @@ public class AREnemyMove : MonoBehaviour, ITrackableEventHandler
 
 {
     public GameObject Enemy;
-    public GameObject ImageTargetPath1;
+    public GameObject ImageTargetPathPoint1;
     public GameObject ImageTargetTower1;
     public float speed = 0.2f;
 
-    private TrackableBehaviour tb_Path1;
+    private TrackableBehaviour tb_PathPoint1;
     private TrackableBehaviour tb_Tower1;
 
     private Transform tr_Enemy;
-    private Transform tr_Path1;
+    private Transform tr_PathPoint1;
 
     void Start()
     {
-        tb_Path1 = ImageTargetPath1.GetComponent<TrackableBehaviour>();
-        if (tb_Path1)
+        tb_PathPoint1 = ImageTargetPathPoint1.GetComponent<TrackableBehaviour>();
+        if (tb_PathPoint1)
         {
-            tb_Path1.RegisterTrackableEventHandler(this);
+            tb_PathPoint1.RegisterTrackableEventHandler(this);
         }
 
         tb_Tower1 = ImageTargetTower1.GetComponent<TrackableBehaviour>();
@@ -32,7 +32,7 @@ public class AREnemyMove : MonoBehaviour, ITrackableEventHandler
         }
 
         tr_Enemy = GameObject.Find("Enemy").transform;
-        tr_Path1 = GameObject.Find("ImageTargetPath1").transform;
+        tr_PathPoint1 = GameObject.Find("ImageTargetPathPoint1").transform;
     }
 
     void Update()

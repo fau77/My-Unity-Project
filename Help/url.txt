@@ -1,5 +1,8 @@
 https://habr.com/post/309544/
 https://null-code.ru/
 
+AR marker image generator
+https://shawnlehner.github.io/ARMaker/
+
 Дом. задание
 https://docs.google.com/document/d/1nfOlo4yjQBv8r72M0vb2uK2WUmXduSXiLL449tyvu5c/edit

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
   <Tracking>
+    <ImageTarget name="PathPoint3" size="1.000000 1.000000" />
+    <ImageTarget name="PathPoint2" size="1.000000 1.000000" />
+    <ImageTarget name="PathPoint1" size="1.000000 1.000000" />
     <ImageTarget name="Tower3" size="1.000000 1.000000" />
     <ImageTarget name="Tower2" size="1.000000 1.000000" />
     <ImageTarget name="Tower1" size="1.000000 1.000000" />
     <ImageTarget name="Special" size="1.000000 1.000000" />
     <ImageTarget name="Spawn" size="1.000000 1.000000" />
     <ImageTarget name="Cave" size="1.000000 1.000000" />
-    <ImageTarget name="bigSpawn" size="1.000000 1.000000" />
-    <ImageTarget name="bigCave" size="1.000000 1.000000" />
-    <ImageTarget name="bigTurret1" size="1.000000 1.000000" />
     <ImageTarget name="Enemy" size="1.000000 1.000000" />
   </Tracking>
 </QCARConfig>
