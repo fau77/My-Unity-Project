@@ -4,9 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using Vuforia;
 
-public class ARButtons : MonoBehaviour {
+public class ARButtons : MonoBehaviour
+{
 
     public GameObject MenuText;
+    public GameObject Enemy;
+    public GameObject Cave;
+    public float EnemyRunSpeed;
+    public float EnemyRotateSpeed;
+    private bool EnemyMooving = false;
     [SerializeField] public GameTargets[] sf_Targets;
     [Serializable]
     public struct GameTargets
@@ -14,6 +20,8 @@ public class ARButtons : MonoBehaviour {
         public string Name;
         public GameObject Target;
     }
+
+
 
     public void ARAlign()
     {
@@ -27,7 +35,7 @@ public class ARButtons : MonoBehaviour {
         }
 
         HashSet<string> hsTargetNamesHave = new HashSet<string>();
-        
+
         // Get the Vuforia StateManager
         StateManager sm = TrackerManager.Instance.GetStateManager();
 
@@ -41,7 +49,7 @@ public class ARButtons : MonoBehaviour {
         {
             hsTargetNamesHave.Add(tb.TrackableName);
         }
-       
+
         hsTargetNamesMust.ExceptWith(hsTargetNamesHave);
         if (hsTargetNamesMust.Count > 0)
         {
@@ -51,9 +59,10 @@ public class ARButtons : MonoBehaviour {
         {
             MenuText.SetActive(false);
             Debug.Log("All targets ready!");
-        foreach (var el in sf_Targets)
+            foreach (var el in sf_Targets)
             {
-                Debug.Log(el.Name + ": " + el.Target.transform.position);
+                Debug.Log(el.Name + " position: " + el.Target.transform.position);
+                Debug.Log(el.Name + " rotation: " + el.Target.transform.rotation);
             }
         }
         hsTargetNamesMust.Clear();
@@ -62,7 +71,29 @@ public class ARButtons : MonoBehaviour {
 
     public void ARStart()
     {
-        sf_Targets[0].Target.GetComponent<Animator>().SetTrigger("Run");
+        //GameObject.Find("Enemy").GetComponent<Animator>().SetTrigger("Run");
+        //Enemy.GetComponent<Animator>().SetTrigger("Run");
+        EnemyMooving = true;
+        //GameObject.Find("Enemy").transform.LookAt(Cave.transform);
+        //GameObject.Find("Enemy").transform.position.Set(10, 0, 10);
+    }
 
+    void Update()
+    {
+        if (EnemyMooving)
+        {
+            if //(Mathf.Abs(Quaternion.Dot(Enemy.transform.rotation, Quaternion.LookRotation(Cave.transform.position))) < 0.9f) 
+            (Enemy.transform.rotation != Cave.transform.rotation)
+            {
+               Enemy.transform.rotation = Quaternion.RotateTowards(Enemy.transform.rotation, Cave.transform.rotation, Time.deltaTime * EnemyRotateSpeed);
+               
+            }
+            else
+            {
+            Enemy.transform.LookAt(Cave.transform);
+            Enemy.GetComponent<Animator>().SetTrigger("Run");
+            Enemy.transform.position = Vector3.MoveTowards(Enemy.transform.position, Cave.transform.position, Time.deltaTime*EnemyRunSpeed);
+            }
+        }
     }
 }
