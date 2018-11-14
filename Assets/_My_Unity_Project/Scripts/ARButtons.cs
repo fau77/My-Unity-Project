@@ -10,9 +10,17 @@ public class ARButtons : MonoBehaviour
     public GameObject MenuText;
     public GameObject Enemy;
     public GameObject Cave;
+    public GameObject Bullet;
+    public GameObject BulletStartPosition;
+    public GameObject TurretGun;
     public float EnemyRunSpeed;
     public float EnemyRotateSpeed;
-    private bool EnemyMooving = false;
+    public float BulletSpeed;
+    public float BulletMaxDistance;
+    private bool StartGame = false;
+    public float BulletTime = 1f;
+    private float BulletTimer = 0;
+    private Vector3 BulletTarget;
     [SerializeField] public GameTargets[] sf_Targets;
     [Serializable]
     public struct GameTargets
@@ -73,27 +81,38 @@ public class ARButtons : MonoBehaviour
     {
         //GameObject.Find("Enemy").GetComponent<Animator>().SetTrigger("Run");
         //Enemy.GetComponent<Animator>().SetTrigger("Run");
-        EnemyMooving = true;
+        StartGame = true;
         //GameObject.Find("Enemy").transform.LookAt(Cave.transform);
         //GameObject.Find("Enemy").transform.position.Set(10, 0, 10);
     }
 
     void Update()
     {
-        if (EnemyMooving)
+        if (StartGame)
         {
-            if //(Mathf.Abs(Quaternion.Dot(Enemy.transform.rotation, Quaternion.LookRotation(Cave.transform.position))) < 0.9f) 
-            (Enemy.transform.rotation != Cave.transform.rotation)
+            if (Quaternion.Angle(Enemy.transform.rotation, Cave.transform.rotation) > 0.2f)
+            //(Mathf.Abs(Quaternion.Dot(Enemy.transform.rotation, Quaternion.LookRotation(Cave.transform.position))) < 0.9f) 
+            //(Enemy.transform.rotation != Cave.transform.rotation)
             {
                Enemy.transform.rotation = Quaternion.RotateTowards(Enemy.transform.rotation, Cave.transform.rotation, Time.deltaTime * EnemyRotateSpeed);
                
             }
             else
             {
-            Enemy.transform.LookAt(Cave.transform);
-            Enemy.GetComponent<Animator>().SetTrigger("Run");
-            Enemy.transform.position = Vector3.MoveTowards(Enemy.transform.position, Cave.transform.position, Time.deltaTime*EnemyRunSpeed);
+            //Enemy.transform.LookAt(Cave.transform);
+            if (Enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "Run") { Enemy.GetComponent<Animator>().SetTrigger("Run"); };
+            Enemy.transform.position = Vector3.MoveTowards(Enemy.transform.position, Cave.transform.position, Time.deltaTime * EnemyRunSpeed);
             }
+
+            //Instantiate(Bullet, BulletStartPosition.transform.position, BulletStartPosition.transform.rotation);
+            Bullet.SetActive(true);
+            //BulletTarget.Set(BulletStartPosition.transform.position.x - BulletMaxDistance, BulletStartPosition.transform.position.y - BulletMaxDistance, BulletStartPosition.transform.position.z - BulletMaxDistance);
+            BulletTarget = (BulletStartPosition.transform.localPosition - TurretGun.transform.localPosition) * BulletMaxDistance;
+            //BulletTarget = BulletStartPosition.transform.localPosition * BulletMaxDistance;
+            Debug.Log("BulletStartPosition position: " + BulletStartPosition.transform.position);
+            Debug.Log("BuletTarget position: " + BulletTarget);
+            Bullet.transform.localPosition = Vector3.MoveTowards(Bullet.transform.localPosition, BulletTarget, Time.deltaTime * BulletSpeed); ;
         }
+    
     }
 }
