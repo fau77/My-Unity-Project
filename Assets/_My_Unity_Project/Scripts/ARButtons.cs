@@ -33,15 +33,14 @@ public class ARButtons : MonoBehaviour
 
     public void ARAlign()
     {
+        //Массив (точнее HashSet), содержащий набор имен необходимых на поле объектов
         HashSet<string> hsTargetNamesMust = new HashSet<string>();
-        //hsTargetNamesMust.Add("Cave");
-        //hsTargetNamesMust.Add("Tower1");
-        //hsTargetNamesMust.Add("Enemy");
+        //Заполняем его требуемыми именами
         foreach (var el in sf_Targets)
         {
             hsTargetNamesMust.Add(el.Name);
         }
-
+        //Массив определившихся на поле объктов
         HashSet<string> hsTargetNamesHave = new HashSet<string>();
 
         // Get the Vuforia StateManager
@@ -55,9 +54,10 @@ public class ARButtons : MonoBehaviour
         // Iterate through the list of active trackables
         foreach (TrackableBehaviour tb in activeTrackables)
         {
+            //Заполняем его из activeTrackables
             hsTargetNamesHave.Add(tb.TrackableName);
         }
-
+        //Сравниваем два набора, если не хватает объектов - выводим предупреждение
         hsTargetNamesMust.ExceptWith(hsTargetNamesHave);
         if (hsTargetNamesMust.Count > 0)
         {
@@ -79,39 +79,49 @@ public class ARButtons : MonoBehaviour
 
     public void ARStart()
     {
-        //GameObject.Find("Enemy").GetComponent<Animator>().SetTrigger("Run");
-        //Enemy.GetComponent<Animator>().SetTrigger("Run");
         StartGame = true;
-        //GameObject.Find("Enemy").transform.LookAt(Cave.transform);
-        //GameObject.Find("Enemy").transform.position.Set(10, 0, 10);
+        //Подготовка снаряда турели
+        Bullet.SetActive(true);
+        //Направление и дистанция полета снаряда
+        //BulletTarget = (BulletStartPosition.transform.localPosition - TurretGun.transform.localPosition) * BulletMaxDistance;
+        //BulletTarget = (BulletStartPosition.transform.position - TurretGun.transform.position) * BulletMaxDistance;
+        Bullet.transform.position = BulletStartPosition.transform.position;
+        BulletTarget = BulletStartPosition.transform.TransformPoint(Vector3.back * BulletMaxDistance);
+        Enemy.transform.LookAt(Cave.transform);
     }
 
     void Update()
     {
         if (StartGame)
         {
-            if (Quaternion.Angle(Enemy.transform.rotation, Cave.transform.rotation) > 0.2f)
-            //(Mathf.Abs(Quaternion.Dot(Enemy.transform.rotation, Quaternion.LookRotation(Cave.transform.position))) < 0.9f) 
-            //(Enemy.transform.rotation != Cave.transform.rotation)
-            {
-               Enemy.transform.rotation = Quaternion.RotateTowards(Enemy.transform.rotation, Cave.transform.rotation, Time.deltaTime * EnemyRotateSpeed);
-               
-            }
-            else
-            {
-            //Enemy.transform.LookAt(Cave.transform);
+            //Проверяем угол оворота Enemy к Cave - если большой сначала поворачиваем Enemy
+            //Debug.Log("Angle: " + Quaternion.Angle(Enemy.transform.rotation, Cave.transform.rotation));
+            //if (Quaternion.Angle(Enemy.transform.rotation, Cave.transform.rotation) > 0.2f)
+            //{
+               //Enemy.transform.rotation = Quaternion.RotateTowards(Enemy.transform.rotation, Cave.transform.rotation, Time.deltaTime * EnemyRotateSpeed);  
+               //Enemy.transform.LookAt(Cave.transform);
+            //}
+            //else
+            //{
+            //Запускаем анимацию бега для Enemy
             if (Enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "Run") { Enemy.GetComponent<Animator>().SetTrigger("Run"); };
+            Enemy.transform.LookAt(Cave.transform);
             Enemy.transform.position = Vector3.MoveTowards(Enemy.transform.position, Cave.transform.position, Time.deltaTime * EnemyRunSpeed);
-            }
+            //}
 
-            //Instantiate(Bullet, BulletStartPosition.transform.position, BulletStartPosition.transform.rotation);
-            Bullet.SetActive(true);
-            //BulletTarget.Set(BulletStartPosition.transform.position.x - BulletMaxDistance, BulletStartPosition.transform.position.y - BulletMaxDistance, BulletStartPosition.transform.position.z - BulletMaxDistance);
-            BulletTarget = (BulletStartPosition.transform.localPosition - TurretGun.transform.localPosition) * BulletMaxDistance;
-            //BulletTarget = BulletStartPosition.transform.localPosition * BulletMaxDistance;
-            Debug.Log("BulletStartPosition position: " + BulletStartPosition.transform.position);
-            Debug.Log("BuletTarget position: " + BulletTarget);
-            Bullet.transform.localPosition = Vector3.MoveTowards(Bullet.transform.localPosition, BulletTarget, Time.deltaTime * BulletSpeed); ;
+            //Debug.Log("Bullet position/magnitude: " + Bullet.transform.position + "/" + Bullet.transform.position.magnitude);
+            //Debug.Log("BuletTarget position/magnitude: " + BulletTarget + "/" + BulletTarget.magnitude);
+            //Debug.DrawLine(BulletStartPosition.transform.position, Bullet.transform.position, Color.red, 10f);
+            if ((BulletTarget - Bullet.transform.position).magnitude < 0.1f)
+            {
+                //Bullet.transform.localPosition = BulletStartPosition.transform.localPosition;
+                Bullet.transform.position = BulletStartPosition.transform.position;
+                BulletTarget = BulletStartPosition.transform.TransformPoint(Vector3.back * BulletMaxDistance);
+            }
+            //Bullet.transform.localPosition = Vector3.MoveTowards(Bullet.transform.localPosition, BulletTarget, Time.deltaTime * BulletSpeed);
+            //Выпускаем снаряд от дула пушки до дистанции, указанной в BulletMaxDistance
+            Bullet.transform.position = Vector3.MoveTowards(Bullet.transform.position, BulletTarget, Time.deltaTime * BulletSpeed);
+
         }
     
     }
