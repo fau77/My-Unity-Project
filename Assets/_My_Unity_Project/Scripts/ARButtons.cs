@@ -80,6 +80,8 @@ namespace ARTowers.AR
                     MenuText.SetActive(false);
                     ///Устанавливаем признак старта игры
                     StartGame = true;
+                    //Активация Enemy
+                    Enemy.EnemyActivate(true);
                     //Активируем пулю
                     Bullet.BulletActivate(true);
                     //Изменяем надпись кнопки старт на "стоп".

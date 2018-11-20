@@ -11,6 +11,7 @@ public class AREnemy : MonoBehaviour {
     private float EnemyCurrentHP;
     //Скорость передвижения
     [SerializeField] private float EnemySpeed = 0.4f;
+    private bool EnemyAtacking = false;
 
     //Событие смерти Enemy
     public Action<AREnemy> OnEnemyDie;
@@ -23,8 +24,10 @@ public class AREnemy : MonoBehaviour {
             //Начальная позиция в 0,0,0
             transform.localPosition = new Vector3(0,0,0);
             transform.localRotation = Quaternion.identity;
+            gameObject.SetActive(true);
             SetEnemyAnimationClip("Idle");
             EnemyCurrentHP = EnemyHP;
+            EnemyAtacking = false;
         }
         else
         {
@@ -35,6 +38,12 @@ public class AREnemy : MonoBehaviour {
     public bool isEnemyAlive
     {
         get { return (EnemyCurrentHP > 0); }
+    }
+
+    //Состояние Enemy - атакует?
+    public bool isEnemyAtacking
+    {
+        get { return (EnemyAtacking); }
     }
 
     //Установить анимацию
@@ -54,28 +63,32 @@ public class AREnemy : MonoBehaviour {
         transform.position = Vector3.MoveTowards(transform.position, toPosition, Time.deltaTime * EnemySpeed);
     }
 
+    //Атака
+    public void EnemyAttack()
+    {
+        SetEnemyAnimationClip("RoundKick");
+    }
+
     //Получение урона
     public void EnemyGetDamage (float Damage)
     {
         EnemyCurrentHP -= Damage;
         Debug.Log("Осталось здоровья: " + EnemyCurrentHP + " из " + EnemyHP);
         Debug.Log("Живой?: " + isEnemyAlive);
-        if (!isEnemyAlive)
-        {
-            //Положить Enemy
-            transform.LookAt(Vector3.down);
-            //Установить анимацию Idle
-            SetEnemyAnimationClip("Idle");
-        }
     }
 
     void OnTriggerEnter(Collider collider)
     {
 
-        Debug.Log("Столкновение!");
         if (collider.gameObject.name == "Bullet")
         {
             EnemyGetDamage(20f);
+            Debug.Log("Попадание!");
+        }
+        if (collider.gameObject.name == "Tower")
+        {
+            Debug.Log("Враг дошел до башни!");
+            EnemyAtacking = true;
         }
     }
 

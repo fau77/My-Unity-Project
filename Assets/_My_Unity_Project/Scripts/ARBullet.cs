@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Класс для управления свойствами снаряда/пули Bullet
-public class ARBullet : MonoBehaviour {
+public class ARBullet : MonoBehaviour
+{
 
     // Скорость передвижения пули
     [SerializeField] private float BulletSpeed = 2f;
@@ -15,6 +16,8 @@ public class ARBullet : MonoBehaviour {
     public Transform BulletStartPosition;
     //Конечная позиция пули
     private Vector3 BulletTarget;
+    //Анимация попадания через Paticle System объекта
+    [SerializeField] private GameObject BulletExp;
 
     //Активация пули
     public void BulletActivate(bool activate)
@@ -33,7 +36,7 @@ public class ARBullet : MonoBehaviour {
         }
     }
 
-    public float BulletDamage 
+    public float BulletDamage
     {
         get { return _BulletDamage; }
     }
@@ -48,8 +51,24 @@ public class ARBullet : MonoBehaviour {
             transform.position = BulletStartPosition.position;
             //Конечная позиция пули (перевод из локальных координат в мировые)
             BulletTarget = BulletStartPosition.TransformPoint(Vector3.forward * BulletDistance);
+            GetComponent<MeshRenderer>().enabled = true;
         }
         //Изменить позицию пули методом MoveTowards
         transform.position = Vector3.MoveTowards(transform.position, BulletTarget, Time.deltaTime * BulletSpeed);
+    }
+
+    void OnTriggerEnter(Collider collider)
+    {
+
+        if (collider.gameObject.name == "Enemy")
+        {
+            //Скрываем пулю при попадании
+            if ((!BulletExp.GetComponent<ParticleSystem>().isPlaying) & (GetComponent<MeshRenderer>().enabled))
+            {
+                BulletExp.transform.localPosition = transform.localPosition;
+                BulletExp.GetComponent<ParticleSystem>().Play();
+            }
+                GetComponent<MeshRenderer>().enabled = false;
+        }
     }
 }
