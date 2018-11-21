@@ -11,6 +11,8 @@ namespace ARTowers.AR
         public ARBullet Bullet;
         public GameObject Tower;
         public GameObject EnemyDieExp;
+        [SerializeField]  private GameObject Win;
+        [SerializeField] private GameObject Lose;
 
         // Use this for initialization
         void Start()
@@ -27,6 +29,7 @@ namespace ARTowers.AR
                     if (Enemy.isEnemyAtacking)
                     {
                         Enemy.EnemyAttack();
+                        Lose.SetActive(true);
                     }
                     else
                     {
@@ -42,6 +45,8 @@ namespace ARTowers.AR
                         {
                             EnemyDieExp.transform.localPosition = Enemy.transform.localPosition;
                             EnemyDieExp.GetComponent<ParticleSystem>().Play();
+                            EnemyDieExp.GetComponent<AudioSource>().Play();
+                            if (!Lose.gameObject.activeSelf) Win.SetActive(true);
                         }
                     }
                     Enemy.gameObject.SetActive(false);

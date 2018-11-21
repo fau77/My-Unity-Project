@@ -25,10 +25,13 @@ public class ARBullet : MonoBehaviour
         if (activate)
         {
             gameObject.SetActive(true);
+            GetComponent<MeshRenderer>().enabled = true;
             //Начальная позиция пули
             transform.position = BulletStartPosition.position;
             //Конечная позиция пули (перевод из локальных координат в мировые)
             BulletTarget = BulletStartPosition.TransformPoint(Vector3.forward * BulletDistance);
+            //Звук выстрела
+            GetComponent<AudioSource>().Play();
         }
         else
         {
@@ -47,11 +50,13 @@ public class ARBullet : MonoBehaviour
         //Проверяем позицию поли относительно конечной с точностью до 0.1f
         if ((BulletTarget - transform.position).magnitude < 0.1f)
         {
+            GetComponent<MeshRenderer>().enabled = true;
             //Начальная позиция пули
             transform.position = BulletStartPosition.position;
             //Конечная позиция пули (перевод из локальных координат в мировые)
             BulletTarget = BulletStartPosition.TransformPoint(Vector3.forward * BulletDistance);
-            GetComponent<MeshRenderer>().enabled = true;
+            //Звук выстрела
+            GetComponent<AudioSource>().Play();//if (!GetComponent<AudioSource>().isPlaying)
         }
         //Изменить позицию пули методом MoveTowards
         transform.position = Vector3.MoveTowards(transform.position, BulletTarget, Time.deltaTime * BulletSpeed);

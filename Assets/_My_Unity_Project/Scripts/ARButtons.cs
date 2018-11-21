@@ -20,6 +20,8 @@ namespace ARTowers.AR
         //Признак состояния игры
         [HideInInspector]
         public static bool StartGame = false;
+        [SerializeField] private GameObject Win;
+        [SerializeField] private GameObject Lose;
 
         [SerializeField] public GameTargets[] sf_Targets;
         [Serializable]
@@ -41,6 +43,8 @@ namespace ARTowers.AR
                 Enemy.EnemyActivate(true);
                 //Изменяем надпись кнопки на "старт".
                 ButtonStartStop.GetComponentInChildren<Text>().text = "СТАРТ";
+                Win.SetActive(false);
+                Lose.SetActive(false);
 
             }
             else
@@ -86,6 +90,8 @@ namespace ARTowers.AR
                     Bullet.BulletActivate(true);
                     //Изменяем надпись кнопки старт на "стоп".
                     ButtonStartStop.GetComponentInChildren<Text>().text = "СТОП";
+                    Win.SetActive(false);
+                    Lose.SetActive(false);
 
                 }
                 hsTargetNamesMust.Clear();
